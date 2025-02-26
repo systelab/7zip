@@ -287,14 +287,12 @@ HRESULT CDirItems::EnumerateOneDir(const FString &phyPrefix, CObjectVector<NFind
   
   CObjectVector<NFind::CDirEntry> entries;
 
-  for (unsigned ttt = 0; ; ttt++)
+  for (;;)
   {
     bool found;
     NFind::CDirEntry de;
     if (!enumerator.Next(de, found))
-    {
       return AddError(phyPrefix);
-    }
     if (!found)
       break;
     entries.Add(de);
@@ -673,7 +671,7 @@ static HRESULT EnumerateForItem(
   }
   
   #if defined(_WIN32)
-  if (needAltStreams && dirItems.ScanAltStreams)
+  if (needAltStreams && dirItems.ScanAltStreams && !fi.IsAltStream)
   {
     RINOK(EnumerateAltStreams(fi, curNode, phyParent, logParent,
         phyPrefix + fi.Name,    // with (fi.Name)
@@ -931,7 +929,7 @@ static HRESULT EnumerateDirItems(
         }
         
         #if defined(_WIN32)
-        if (needAltStreams && dirItems.ScanAltStreams)
+        if (needAltStreams && dirItems.ScanAltStreams && !fi.IsAltStream)
         {
           UStringVector pathParts;
           pathParts.Add(fs2us(fi.Name));
